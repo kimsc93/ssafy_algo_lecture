@@ -1,0 +1,76 @@
+package algo_day_12;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class homework {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner("1\r\n"+
+				"4\r\n" + 
+				"0 0 400 400\r\n" + 
+				"0 100 0 100\r\n" + 
+				"1.0");
+		int T = sc.nextInt();
+		
+		for(int tc=1;tc<=T;tc++) {
+			int num = sc.nextInt();			
+			int[] x = new int[num];
+			int[] y = new int[num];
+			for(int i=0;i<num;i++) {
+				x[i] = sc.nextInt();
+			}
+			for(int i=0;i<num;i++) {
+				y[i] = sc.nextInt();
+			}
+			float f = sc.nextFloat();
+			
+			int[][] arr = new int[num][num];
+			
+			for(int i=0;i<num;i++) {
+				for(int j=0;j<num;j++) {
+					arr[i][j] = Math.abs(x[i]-x[j])+Math.abs(y[i]-y[j]) ;
+					arr[j][i] = Math.abs(x[i]-x[j])+Math.abs(y[i]-y[j]) ;
+				}
+			}
+			for(int i=0;i<num;i++) {
+				System.out.println(Arrays.toString(arr[i]));
+			}
+			int minCost=0;
+			int index=0;	//새로연결되는 정점의 번호를 저장할 변수
+			ArrayList<Integer> selectedList = new ArrayList<>();
+			boolean[] selected = new boolean[num];
+			
+			//2.0번 노드를 첫번째 노드로 지정(선택체크 및 리스트에 담기)
+			selected[0]=true;		
+			selectedList.add(0);
+			int result=0;
+			for(int i=0;i<num-1;i++) {	//시작 정점을 뺀 나머지 정점 수 만큼 반복
+				//방문했던 모든 정점을 순회하면서
+				//인접노드이면서, 아직 선택되지 않으면서, 경로비용이 최소인 것을 찾기
+				index=0;
+				minCost = 987654321;
+				
+				//기준 정점 : 현재 선택된 정점들
+				//기준 정점으로부터 연결된 모든 정점(이미 선택된 놈 제외)중에서 경로비용이 젤 작은 비용과 정점 선택
+				for(int j: selectedList) {
+					for(int k=0;k<num;k++) {
+						//adj[j][k]가 0이면 연결안됨
+						//selected[k]가 true이면 이미 한패
+						if(!selected[k] && arr[j][k]!=0) {
+							if(minCost>arr[j][k]) {
+								minCost=arr[j][k];
+								index=k;
+							}
+						}
+					}	
+				}
+				result+=minCost;
+				selectedList.add(index);
+				selected[index]=true;
+			}
+			System.out.println(result);
+		}
+		
+	}
+}
